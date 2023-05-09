@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1074723535215",
+    "firebase_url": "https://swifttasks-93d8b-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "swifttasks-93d8b",
+    "storage_bucket": "swifttasks-93d8b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074723535215:android:f77441b1cbbc177ee3509a",
+        "android_client_info": {
+          "package_name": "com.example.swifttasks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1074723535215-59v7n4o8qmvmk12ktrffqmbi6e8v6mkl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCNYN17_Bap1FyMFtk4YqRS4hTagLMYtA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1074723535215-59v7n4o8qmvmk12ktrffqmbi6e8v6mkl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
