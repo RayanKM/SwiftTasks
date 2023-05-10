@@ -93,26 +93,30 @@ class MainActivity : AppCompatActivity(),Home.OnButtonClickListener {
         }
     }
 
-    private fun setAlarm(){
-        val currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
-        val toastMessage = "The current time is: $currentTime"
 
+    private fun setAlarm(){
+        // This function is used to set a repeating alarm that triggers a notification every day at 9:00 AM.
+        // Using the AlarmManager API to set a repeating alarm
+        // AlarmManager is part of the Android API for scheduling alarms
+        // Initialize the Calendar object with current date and time, then set the hour, minute, second and millisecond to 0
         calendar = Calendar.getInstance()
         calendar[Calendar.HOUR_OF_DAY] = 9
         calendar[Calendar.MINUTE] = 0
         calendar[Calendar.SECOND] = 0
         calendar[Calendar.MILLISECOND] = 0
-
+        // Get the AlarmManager system service
         alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        // Create an Intent that will be used to trigger the NotificationReceiver
         val intent = Intent(this,NotificationReceiver::class.java)
-
+        // Create a PendingIntent that will start the NotificationReceiver when the alarm is triggered
         pendingIntent = PendingIntent.getBroadcast(this,0,intent,0)
-
+        // Set the repeating alarm using the AlarmManager, with the PendingIntent and the interval time
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,calendar.timeInMillis,
             AlarmManager.INTERVAL_DAY,pendingIntent
         )
     }
+
 
     private fun turnNotf(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){

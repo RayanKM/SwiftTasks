@@ -55,21 +55,28 @@ class Profile : Fragment(R.layout.fragment_profile) {
         super.onViewCreated(view, savedInstanceState)
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://worldtimeapi.org/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        //here is the api
+            .baseUrl("http://worldtimeapi.org/") // set the base URL for the API
+            .addConverterFactory(GsonConverterFactory.create()) // add a Gson converter factory to serialize and deserialize JSON responses
+            .build() // build the retrofit instance
+        // create an instance of the TimeApi interface using the retrofit instance
         val api = retrofit.create(TimeApi::class.java)
 
+        // launch a new coroutine in a background thread
         GlobalScope.launch(Dispatchers.IO) {
             try {
+                // make the API request to get the time for the specified timezone
                 val response = api.getTime("Europe/London")
+                // extract the received time from the response
                 val receivedTime = response.datetime
+                // create a date formatter to parse the received time string
                 val inputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX", Locale.getDefault())
+                // parse the received time string to a Date object
                 val parsedDate = inputDateFormat.parse(receivedTime)
+                // create a date formatter to format the time to display
                 val outputDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                // format the parsed date to a formatted string
                 val formattedTime = outputDateFormat.format(parsedDate)
+                // update the UI on the main thread with the formatted time string
                 withContext(Dispatchers.Main) {
                     binding.tms.text = "Your current time is : $formattedTime"
                 }
@@ -77,7 +84,6 @@ class Profile : Fragment(R.layout.fragment_profile) {
 
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Log.d("sdfqsdqdq","Error: ${e.message}" )
                 }
             }
         }

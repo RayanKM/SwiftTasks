@@ -23,12 +23,41 @@ class Login : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) { // override the onCreate() function
         super.onCreate(savedInstanceState) // call the super class's onCreate() function
-        binding =
-            ActivityLoginBinding.inflate(layoutInflater) // inflate the view using the ActivityLoginBinding class and assign it to the binding variable
+        binding = ActivityLoginBinding.inflate(layoutInflater) // inflate the view using the ActivityLoginBinding class and assign it to the binding variable
         setContentView(binding.root) // set the content view of the activity to the root view of the inflated layout
-        FirebaseApp.initializeApp(this) // initialize the FirebaseApp with the current context
-        firebaseAuth =
-            FirebaseAuth.getInstance() // initialize the firebaseAuth variable with the instance of the FirebaseAuth class
+        FirebaseApp.initializeApp(this)   // Initialize Firebase API with the context of the fragment.
+        firebaseAuth = FirebaseAuth.getInstance() // Get an instance of FirebaseAuth API.
+
+        binding.button.setOnClickListener {
+            // Get the email and password entered by the user from the EditText views
+            val email = binding.emailEt.text.toString()
+            val pass = binding.passET.text.toString()
+            // Check if email and password are not empty
+            if (email.isNotEmpty() && pass.isNotEmpty()) {
+                // Sign in the user using the entered email and password
+                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
+                    // If the sign-in is successful
+                    if (it.isSuccessful) {
+                        val intent = Intent(this, MainActivity::class.java)
+                        val sharedPreferences = getSharedPreferences("SV", MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        editor.apply {
+                            putString("STRING_KEY", firebaseAuth.uid.toString())
+                        }.apply()
+                        startActivity(intent)
+                    } else {
+                        // If sign-in is not successful, show an error message using a Toast
+                        Toast.makeText(this, it.exception?.message.toString(), Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            } else {
+                // If email or password is empty, show an error message using a Toast
+                Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
         binding.textView.setOnClickListener { // set an onClickListener for the textView in the layout
             val intent = Intent(
                 this,
@@ -72,19 +101,19 @@ class Login : AppCompatActivity() {
                                 )
                             )
                         }.addOnFailureListener { // if sending the email fails, show an error toast
-                        MotionToast.createColorToast(
-                            this,
-                            "Error!",
-                            "The account may not exist",
-                            MotionToastStyle.WARNING,
-                            MotionToast.GRAVITY_BOTTOM,
-                            MotionToast.LONG_DURATION,
-                            ResourcesCompat.getFont(
+                            MotionToast.createColorToast(
                                 this,
-                                www.sanju.motiontoast.R.font.helvetica_regular
+                                "Error!",
+                                "The account may not exist",
+                                MotionToastStyle.WARNING,
+                                MotionToast.GRAVITY_BOTTOM,
+                                MotionToast.LONG_DURATION,
+                                ResourcesCompat.getFont(
+                                    this,
+                                    www.sanju.motiontoast.R.font.helvetica_regular
+                                )
                             )
-                        )
-                    }
+                        }
                 } else { // if the taga EditText is empty, show a warning toast
                     MotionToast.createColorToast(
                         this,
@@ -106,47 +135,6 @@ class Login : AppCompatActivity() {
             }
         }
 
-
-/*
-
-Set an OnClickListener on the button view using the binding object.
-*/
-        binding.button.setOnClickListener {
-// Get the email and password entered by the user from the EditText views
-            val email = binding.emailEt.text.toString()
-            val pass = binding.passET.text.toString()
-
-// Check if email and password are not empty
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
-// Sign in the user using the entered email and password
-                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
-// If the sign-in is successful
-                    if (it.isSuccessful) {
-// Get a reference to the "Users" node in the Firebase Realtime Database
-                        database = FirebaseDatabase.getInstance().getReference("Users")
-// Get the "country" value for the current user from the Realtime Database
-                        database.child(FirebaseAuth.getInstance().uid.toString()).child("country")
-                            .get().addOnSuccessListener {
-// If getting the value is successful, start the MainActivity and save the user ID in SharedPreferences
-                            val intent = Intent(this, MainActivity::class.java)
-                            val sharedPreferences = getSharedPreferences("SV", MODE_PRIVATE)
-                            val editor = sharedPreferences.edit()
-                            editor.apply {
-                                putString("STRING_KEY", firebaseAuth.uid.toString())
-                            }.apply()
-                            startActivity(intent)
-                        }
-                    } else {
-// If sign-in is not successful, show an error message using a Toast
-                        Toast.makeText(this, it.exception?.message.toString(), Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-            } else {
-// If email or password is empty, show an error message using a Toast
-                Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun onStart() {

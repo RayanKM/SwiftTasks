@@ -60,18 +60,27 @@ class Home : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Initialize Firebase API with the context of the fragment.
         FirebaseApp.initializeApp(requireContext())
+        // Get an instance of FirebaseAuth API.
         firebaseAuth = FirebaseAuth.getInstance()
+        // Get an instance of FirebaseDatabase API.
         val database = FirebaseDatabase.getInstance()
+        /* Get a DatabaseReference object by specifying the path of the data in the FirebaseDatabase.
+        In this case, it's the child node "Users" which has a child node with the UID of the currently signed in user,
+        and then another child node called "username". */
         val myRef2 = database.getReference("Users").child(firebaseAuth.uid.toString()).child("username")
         myRef2.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val username = snapshot.getValue(String::class.java)
-                binding.hallo.text = "Hello\n$username"
+            /* Add a ValueEventListener to listen for changes in the data of the "username" node.
+               The onDataChange() method will be called whenever the data changes. */
+            override fun onDataChange(snapshot: DataSnapshot) {  // Called when data changes
+                val username = snapshot.getValue(String::class.java)  // Get the value of the "username" node from the snapshot
+                binding.hallo.text = "Hello\n$username"  // Update the UI with the username
             }
-            override fun onCancelled(error: DatabaseError) {
+            override fun onCancelled(error: DatabaseError) {  // Called when the listener is cancelled
             }
         })
+
         val projectList = mutableListOf<ProjectModel>()
         val myRef = database.getReference("Users").child(firebaseAuth.uid.toString()).child("Projects")
         val taskKeyMap = mutableMapOf<Int, String>()
