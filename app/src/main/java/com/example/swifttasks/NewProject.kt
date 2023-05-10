@@ -100,14 +100,29 @@ class NewProject : Fragment(R.layout.fragment_new_project) {
 
         binding.addp.setOnClickListener {
             if (checked != null){
-                Log.d("tsdqs^fqez", checked.toString())
                 database = FirebaseDatabase.getInstance().getReference("Users")
                 val id = firebaseAuth.uid.toString()
                 val Projects = ProjectModel(checked,binding.PD.text.toString(),tasks)
                 database.child(id).child("Projects").push().setValue(Projects).addOnSuccessListener {
-                    Toast.makeText(requireContext(), "DONE", Toast.LENGTH_SHORT).show()
+                    tasks.clear()
+                    adapter.clear()
+                    adapter.notifyDataSetChanged()
+                    binding.PD.text.clear()
+                    for (checkBox in checkBoxes) {
+                        checkBox.isChecked = false
+                    }
+                    MotionToast.createColorToast(requireActivity(),
+                        "Done!",
+                        "New project created",
+                        MotionToastStyle.SUCCESS,
+                        MotionToast.GRAVITY_BOTTOM,
+                        MotionToast.LONG_DURATION,
+                        ResourcesCompat.getFont(requireContext(), www.sanju.motiontoast.R.font.helvetica_regular))
+                    val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.mn, Projects())
+                    transaction.addToBackStack(null)
+                    transaction.commit()
                 }.addOnFailureListener {
-                    Log.d("tsdqs^fqez", "failed")
                 }
             }
         }
