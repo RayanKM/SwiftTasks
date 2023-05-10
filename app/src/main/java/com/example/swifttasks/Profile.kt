@@ -8,20 +8,34 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
-import com.example.swifttasks.databinding.AddtaskdialogBinding
 import com.example.swifttasks.databinding.ChangeusernameBinding
-import com.example.swifttasks.databinding.FragmentNewProjectBinding
 import com.example.swifttasks.databinding.FragmentProfileBinding
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Path
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
+import java.text.SimpleDateFormat
+import java.util.*
 
+data class TimeResponse(
+    val datetime: String
+)
+interface TimeApi {
+    @GET("api/timezone/{timezone}")
+    suspend fun getTime(@Path("timezone") timezone: String): TimeResponse
+}
 class Profile : Fragment(R.layout.fragment_profile) {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var firebaseAuth: FirebaseAuth
@@ -39,6 +53,34 @@ class Profile : Fragment(R.layout.fragment_profile) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://worldtimeapi.org/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        //here is the api
+        val api = retrofit.create(TimeApi::class.java)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val response = api.getTime("Europe/London")
+                val receivedTime = response.datetime
+                val inputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX", Locale.getDefault())
+                val parsedDate = inputDateFormat.parse(receivedTime)
+                val outputDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val formattedTime = outputDateFormat.format(parsedDate)
+                withContext(Dispatchers.Main) {
+                    binding.tms.text = "Your current time is : $formattedTime"
+                }
+
+
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Log.d("sdfqsdqdq","Error: ${e.message}" )
+                }
+            }
+        }
 
 
         binding.profile.clipToOutline = true
@@ -108,3 +150,4 @@ class Profile : Fragment(R.layout.fragment_profile) {
         }
     }
 }
+

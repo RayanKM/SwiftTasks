@@ -96,7 +96,6 @@ class MainActivity : AppCompatActivity(),Home.OnButtonClickListener {
     private fun setAlarm(){
         val currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
         val toastMessage = "The current time is: $currentTime"
-        Toast.makeText(applicationContext, toastMessage, Toast.LENGTH_SHORT).show()
 
         calendar = Calendar.getInstance()
         calendar[Calendar.HOUR_OF_DAY] = 9
@@ -113,7 +112,6 @@ class MainActivity : AppCompatActivity(),Home.OnButtonClickListener {
             AlarmManager.RTC_WAKEUP,calendar.timeInMillis,
             AlarmManager.INTERVAL_DAY,pendingIntent
         )
-        Toast.makeText(this,"DONE ALARM",Toast.LENGTH_SHORT).show()
     }
 
     private fun turnNotf(){
