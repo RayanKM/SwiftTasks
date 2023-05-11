@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1028365922254",
+    "firebase_url": "https://mobileapp-b943a-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "mobileapp-b943a",
+    "storage_bucket": "mobileapp-b943a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028365922254:android:da0f7dbef7a9c121c3459f",
+        "android_client_info": {
+          "package_name": "com.example.swifttasks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028365922254-me7nmggelfemj0qicc8b7mouvhv0vn8d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxAn2YJcyf5kMxUqs87P_ofrsYWfiMrG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028365922254-me7nmggelfemj0qicc8b7mouvhv0vn8d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
